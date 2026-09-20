@@ -20,6 +20,5 @@
     "strictPropertyInitialization": false,
     "types": ["vitest/globals", "node"]
   },
-  "baseUrl": "./",
-  "paths": { "@rps/shared": ["../../packages/shared/src"] }
+  "baseUrl": "./"
 }
