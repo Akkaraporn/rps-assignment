@@ -1,0 +1,89 @@
+$color-bg: #f5f5f4;
+$color-surface: #ffffff;
+$color-border: #d6d3d1;
+$color-text: #1c1917;
+$color-win: #16a34a;
+$color-lose: #dc2626;
+$space: 1rem;
+
+@mixin card {
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: 8px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: $color-bg;
+  color: $color-text;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: $space * 2 $space;
+
+  &__title { font-size: 1.5rem; text-align: center; }
+  &__error { color: $color-lose; text-align: center; }
+}
+
+.scoreboard {
+  &__scores {
+    display: flex;
+    justify-content: center;
+    gap: $space * 2;
+    margin: 0 0 $space * 2;
+
+    div { text-align: center; }
+    dt { font-size: 0.875rem; color: #78716c; }
+    dd { margin: 0.25rem 0 0; font-size: 1.5rem; font-weight: 500; }
+  }
+
+  &__bot { text-align: center; }
+  &__label { font-size: 0.875rem; color: #78716c; }
+}
+
+.bot-card {
+  @include card;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  margin: $space auto $space * 2;
+  font-size: 1rem;
+  font-weight: 500;
+
+  &--win { border-color: $color-win; }
+  &--lose { border-color: $color-lose; }
+}
+
+.moves {
+  text-align: center;
+
+  &__buttons {
+    display: flex;
+    gap: $space;
+    margin-top: $space;
+  }
+}
+
+.move-button {
+  @include card;
+  flex: 1;
+  min-height: 72px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:disabled { opacity: 0.4; cursor: not-allowed; }
+  &:not(:disabled):hover { border-color: $color-text; }
+}
+
+@media (max-width: 480px) {
+  .scoreboard__scores { gap: $space; }
+  .move-button { min-height: 88px; }
+}

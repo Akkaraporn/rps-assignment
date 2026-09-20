@@ -1,2 +1,2 @@
-export * from './moves';
-export * from './api';
+export * from './moves.js';
+export * from './api.js';

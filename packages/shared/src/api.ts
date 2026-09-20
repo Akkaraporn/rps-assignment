@@ -1,4 +1,4 @@
-import type { Move, RoundResult } from './moves';
+import type { Move, RoundResult } from './moves.js';
 
 export interface PlayRequest {
   move: Move;
