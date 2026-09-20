@@ -15,7 +15,7 @@ export class GameService {
     await this.scores.setCurrent(sessionId, currentScore);
     const highScore = await this.scores.bumpHighScore(currentScore);
 
-    return { botMove, result, currentScore, highScore };
+    return { playerMove, botMove, result, currentScore, highScore };
   }
 
   async getSession(sessionId: string): Promise<SessionResponse> {

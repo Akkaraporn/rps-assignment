@@ -5,6 +5,7 @@ export interface PlayRequest {
 }
 
 export interface PlayResponse {
+  playerMove: Move;
   botMove: Move;
   result: RoundResult;
   currentScore: number;
