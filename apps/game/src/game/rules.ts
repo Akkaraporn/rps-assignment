@@ -15,9 +15,3 @@ export function judge(playerMove: Move, botMove: Move): RoundResult {
 export function randomMove(): Move {
   return MOVES[randomInt(0, MOVES.length)];
 }
-
-export function nextScore(currentScore: number, result: RoundResult): number {
-  if (result === 'WIN') return currentScore + 1;
-  if (result === 'LOSE') return 0;
-  return currentScore;
-}

@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { GameController } from './game.controller.js';
 import { GameService } from './game.service.js';
-import { ScoreStore } from './score.store.js';
+import { HttpScoreClient } from './http-score.client.js';
+import { ScoreClient } from './score.client.js';
 
 @Module({
   controllers: [GameController],
-  providers: [GameService, ScoreStore],
+  providers: [GameService, { provide: ScoreClient, useClass: HttpScoreClient }],
 })
 export class GameModule {}

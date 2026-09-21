@@ -3,7 +3,6 @@ import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { ConfigModule } from '@nestjs/config';
-import { RedisModule } from './redis/redis.module.js';
 import { GameModule } from './game/game.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
@@ -17,7 +16,6 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     }),
     ConfigModule.forRoot({ isGlobal: true ,
                            envFilePath: ['../../.env'],}),
-    RedisModule,
     GameModule,
   ],
   controllers: [AppController],

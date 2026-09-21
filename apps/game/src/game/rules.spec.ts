@@ -1,4 +1,4 @@
-import { judge, nextScore, randomMove } from './rules';
+import { judge, randomMove } from './rules.js';
 import { MOVES, type Move } from '@rps/shared';
 
 describe('judge', () => {
@@ -14,12 +14,6 @@ describe('judge', () => {
     expect(judge(player, bot)).toBe('WIN');
     expect(judge(bot, player)).toBe('LOSE');
   });
-});
-
-describe('nextScore', () => {
-  it('Win to be 5', () => expect(nextScore(4, 'WIN')).toBe(5));
-  it('Lose to be 0', () => expect(nextScore(9, 'LOSE')).toBe(0));
-  it('Draw', () => expect(nextScore(3, 'DRAW')).toBe(3));
 });
 
 describe('randomMove', () => {

@@ -1,28 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import type { Move, PlayResponse, SessionResponse } from '@rps/shared';
-import { judge, nextScore, randomMove } from './rules.js';
-import { ScoreStore } from './score.store.js';
+import { judge, randomMove } from './rules.js';
+import { ScoreClient } from './score.client.js';
 
 @Injectable()
 export class GameService {
-  constructor(private readonly scores: ScoreStore) {}
+  constructor(private readonly scores: ScoreClient) {}
 
-  async play(sessionId: string, playerMove: Move): Promise<PlayResponse> {
+  async play(userId: string, playerMove: Move): Promise<PlayResponse> {
     const botMove = randomMove();
     const result = judge(playerMove, botMove);
 
-    const currentScore = nextScore(await this.scores.getCurrent(sessionId), result);
-    await this.scores.setCurrent(sessionId, currentScore);
-    const highScore = await this.scores.bumpHighScore(currentScore);
+    const { currentScore, highScore } = await this.scores.applyRound(userId, {
+      playerMove,
+      botMove,
+      result,
+    });
 
     return { playerMove, botMove, result, currentScore, highScore };
   }
 
-  async getSession(sessionId: string): Promise<SessionResponse> {
-    const [currentScore, highScore] = await Promise.all([
-      this.scores.getCurrent(sessionId),
-      this.scores.getHighScore(),
-    ]);
+  async getSession(userId: string): Promise<SessionResponse> {
+    const { currentScore, highScore } = await this.scores.getScore(userId);
     return { currentScore, highScore };
+  }
+
+  createGuest(): Promise<string> {
+    return this.scores.createGuest();
   }
 }
