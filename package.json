@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm --parallel --filter ./apps/** dev",
+    "dev": "pnpm --parallel --filter @rps/shared --filter \"./apps/**\" dev",
+    "build:shared": "pnpm --filter @rps/shared build",
     "infra": "docker compose up -d",
-    "test": "pnpm --filter ./apps/** test"
+    "test": "pnpm --filter \"./apps/**\" test"
   },
   "keywords": [],
   "author": "",
