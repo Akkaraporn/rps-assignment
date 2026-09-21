@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { Move, PlayResponse, SessionResponse } from '@rps/shared';
+import type { Move, PlayResponse } from '@rps/shared';
 import { judge, randomMove } from './rules.js';
 import { ScoreClient } from './score.client.js';
 
@@ -18,14 +18,5 @@ export class GameService {
     });
 
     return { playerMove, botMove, result, currentScore, highScore };
-  }
-
-  async getSession(userId: string): Promise<SessionResponse> {
-    const { currentScore, highScore } = await this.scores.getScore(userId);
-    return { currentScore, highScore };
-  }
-
-  createGuest(): Promise<string> {
-    return this.scores.createGuest();
   }
 }

@@ -1,13 +1,12 @@
-import type { ApplyScoreRequest, ScoreSnapshot } from '@rps/shared';
+import { NotFoundException } from '@nestjs/common';
+import { ERROR_CODES, type ApplyScoreRequest, type ScoreSnapshot } from '@rps/shared';
 
-export class UserNotFoundError extends Error {
-  constructor(userId: string) {
-    super(`User ${userId} not found`);
+export class UserNotFoundError extends NotFoundException {
+  constructor() {
+    super({ code: ERROR_CODES.USER_NOT_FOUND, message: 'User not found' });
   }
 }
 
 export abstract class ScoreClient {
-  abstract createGuest(): Promise<string>;
-  abstract getScore(userId: string): Promise<ScoreSnapshot>;
   abstract applyRound(userId: string, round: ApplyScoreRequest): Promise<ScoreSnapshot>;
 }

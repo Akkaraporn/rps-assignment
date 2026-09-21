@@ -17,15 +17,6 @@ export class HttpScoreClient extends ScoreClient {
     this.timeoutMs = Number(config.get('USER_SERVICE_TIMEOUT_MS') ?? 3000);
   }
 
-  async createGuest(): Promise<string> {
-    const body = await this.request<GuestUserResponse>('POST', '/internal/users/guest');
-    return body.userId;
-  }
-
-  getScore(userId: string): Promise<ScoreSnapshot> {
-    return this.request<ScoreSnapshot>('GET', `/internal/scores/${userId}`, undefined, userId);
-  }
-
   applyRound(userId: string, round: ApplyScoreRequest): Promise<ScoreSnapshot> {
     return this.request<ScoreSnapshot>('POST', `/internal/scores/${userId}/apply`, round, userId);
   }
@@ -48,7 +39,7 @@ export class HttpScoreClient extends ScoreClient {
     }
 
     if (res.status === 404 && userId) {
-      throw new UserNotFoundError(userId);
+      throw new UserNotFoundError();
     }
     if (!res.ok) {
       this.logger.error(`User service responded ${res.status}: ${method} ${path}`);
