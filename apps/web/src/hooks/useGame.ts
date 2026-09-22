@@ -2,9 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Move, RoundResult } from '@rps/shared';
 import { fetchSession, play } from '../api/client';
 import { subscribeHighScore } from '../api/highScoreSocket';
+import { ApiError } from '../api/client';
 
-const REVEAL_MS = 2000;
-
+const REVEAL_MS = Number(import.meta.env.VITE_REVEAL_DURATION_MS ?? 2000);
 type Phase = 'idle' | 'playing' | 'revealing';
 
 interface GameState {
@@ -27,7 +27,6 @@ export function useGame() {
   });
 
   const timerRef = useRef<number | null>(null);
-
   useEffect(() => {
     let cancelled = false;
 
@@ -76,9 +75,13 @@ export function useGame() {
           setState((prev) => ({ ...prev, phase: 'idle', botMove: null, result: null }));
         }, REVEAL_MS);
       })
-      .catch(() => {
-        setState((prev) => ({ ...prev, phase: 'idle', error: 'เชื่อมต่อไม่สำเร็จ' }));
-      });
+      .catch((error: unknown) => {
+        const message =
+          error instanceof ApiError && error.status === 429
+            ? 'เล่นเร็วเกินไป ลองใหม่อีกครั้ง'
+            : 'เชื่อมต่อไม่สำเร็จ';
+        setState((prev) => ({ ...prev, phase: 'idle', error: message }));
+      });;
   }, []);
 
   return { ...state, choose };

@@ -8,7 +8,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
-    throw new Error(`Request failed: ${res.status}`);
+    throw new ApiError(res.status)
   }
 
   return res.json() as Promise<T>;
@@ -23,4 +23,10 @@ export function play(move: PlayRequest['move']): Promise<PlayResponse> {
     method: 'POST',
     body: JSON.stringify({ move } satisfies PlayRequest),
   });
+}
+
+export class ApiError extends Error {
+  constructor(readonly status: number) {
+    super(`Request failed: ${status}`);
+  }
 }

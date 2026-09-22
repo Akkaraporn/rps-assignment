@@ -4,6 +4,7 @@ import type { Request, Response } from 'express';
 import type { PlayResponse, ScoreSnapshot, SessionResponse } from '@rps/shared';
 import { SessionService } from '../session/session.service.js';
 import { UpstreamClient } from '../upstream/upstream.client.js';
+import { RateLimiter } from '../rate-limit/rate-limiter.service.js';
 
 @Controller('api')
 export class ApiController {
@@ -14,11 +15,12 @@ export class ApiController {
     config: ConfigService,
     private readonly session: SessionService,
     private readonly upstream: UpstreamClient,
+    private readonly limiter: RateLimiter,
   ) {
     this.gameServiceUrl = config.getOrThrow<string>('GAME_SERVICE_URL');
     this.userServiceUrl = config.getOrThrow<string>('USER_SERVICE_URL');
   }
-
+  
   @Get('session')
   getSession(@Req() req: Request, @Res({ passthrough: true }) res: Response): Promise<SessionResponse> {
     return this.session.withUser(req, res, async (userId) => {
@@ -38,11 +40,12 @@ export class ApiController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<PlayResponse> {
-    return this.session.withUser(req, res, (userId) =>
-      this.upstream.request<PlayResponse>(this.gameServiceUrl, 'POST', '/internal/play', {
+    return this.session.withUser(req, res, async (userId) => {
+      await this.limiter.assertCanPlay(userId);
+      return this.upstream.request<PlayResponse>(this.gameServiceUrl, 'POST', '/internal/play', {
         userId,
         body,
-      }),
-    );
+      });
+    });
   }
 }
