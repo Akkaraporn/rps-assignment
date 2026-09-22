@@ -6,4 +6,4 @@ coverage/
 NOTES.md
 c.txt
 cookies.txt
-*.log
+*.log*.tsbuildinfo

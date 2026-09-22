@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector  } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module.js';
@@ -9,7 +9,7 @@ async function bootstrap() {
   const config = app.get(ConfigService);
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  app.useGlobalGuards(new InternalTokenGuard(config));
+  app.useGlobalGuards(new InternalTokenGuard(config, app.get(Reflector)));
   await app.listen(config.get<number>('USER_PORT') ?? 3002);
 }
 void bootstrap();

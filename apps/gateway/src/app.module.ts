@@ -6,6 +6,7 @@ import { RealtimeModule } from './realtime/realtime.module.js';
 import { RedisModule } from './redis/redis.module.js';
 import { SessionService } from './session/session.service.js';
 import { UpstreamClient } from './upstream/upstream.client.js';
+import { HealthController } from './health/health.controller.js';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { UpstreamClient } from './upstream/upstream.client.js';
     RedisModule,
     RealtimeModule,
   ],
-  controllers: [ApiController],
+  controllers: [ApiController, HealthController],
   providers: [SessionService, UpstreamClient, RateLimiter],
 })
 export class AppModule {}

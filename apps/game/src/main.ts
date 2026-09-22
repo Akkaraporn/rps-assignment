@@ -1,4 +1,4 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module.js';
@@ -10,8 +10,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix('internal');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-  app.useGlobalGuards(new InternalTokenGuard(config));
-
+  app.setGlobalPrefix('internal', { exclude: ['health'] });
+  app.useGlobalGuards(new InternalTokenGuard(config, app.get(Reflector)));
   await app.listen(config.get<number>('GAME_PORT') ?? 3001);
 }
 void bootstrap();
