@@ -27,6 +27,7 @@ export function useGame() {
   });
 
   const timerRef = useRef<number | null>(null);
+  const phaseRef = useRef<Phase>('idle');
   useEffect(() => {
     let cancelled = false;
 
@@ -55,33 +56,35 @@ export function useGame() {
   }, []);
 
   const choose = useCallback((move: Move) => {
-    setState((prev) => {
-      if (prev.phase !== 'idle') return prev;
-      return { ...prev, phase: 'playing', error: null };
-    });
+    if (phaseRef.current !== 'idle') return;
+    phaseRef.current = 'playing';
+    setState((prev) => ({ ...prev, phase: 'playing', error: null }));
 
     play(move)
       .then((res) => {
+        phaseRef.current = 'revealing';
         setState((prev) => ({
           ...prev,
           phase: 'revealing',
           botMove: res.botMove,
           result: res.result,
           currentScore: res.currentScore,
-          highScore: res.highScore,
+          highScore: Math.max(prev.highScore, res.highScore),
         }));
 
         timerRef.current = window.setTimeout(() => {
+          phaseRef.current = 'idle';
           setState((prev) => ({ ...prev, phase: 'idle', botMove: null, result: null }));
         }, REVEAL_MS);
       })
       .catch((error: unknown) => {
+        phaseRef.current = 'idle';
         const message =
           error instanceof ApiError && error.status === 429
             ? 'เล่นเร็วเกินไป ลองใหม่อีกครั้ง'
             : 'เชื่อมต่อไม่สำเร็จ';
         setState((prev) => ({ ...prev, phase: 'idle', error: message }));
-      });;
+      });
   }, []);
 
   return { ...state, choose };

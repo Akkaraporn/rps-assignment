@@ -1,6 +1,9 @@
-node_modules
+node_modules/
+dist/
+coverage/
+.vite/
 .env
-dist
-cookies.txt
-*.tsbuildinfo
+NOTES.md
 c.txt
+cookies.txt
+*.log
