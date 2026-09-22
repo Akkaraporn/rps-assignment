@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Move, RoundResult } from '@rps/shared';
 import { fetchSession, play } from '../api/client';
+import { subscribeHighScore } from '../api/highScoreSocket';
 
 const REVEAL_MS = 2000;
 
@@ -46,6 +47,12 @@ export function useGame() {
         window.clearTimeout(timerRef.current);
       }
     };
+  }, []);
+
+    useEffect(() => {
+    return subscribeHighScore((highScore) => {
+      setState((prev) => ({ ...prev, highScore: Math.max(prev.highScore, highScore) }));
+    });
   }, []);
 
   const choose = useCallback((move: Move) => {
