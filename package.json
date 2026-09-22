@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "pnpm --parallel --filter @rps/shared --filter \"./apps/**\" dev",
     "build:shared": "pnpm --filter @rps/shared build",
-    "infra": "docker compose up -d",
+    "infra": "docker compose -f docker-compose.dev.yml up -d",
+    "infra:down": "docker compose -f docker-compose.dev.yml down",
+    "stack": "docker compose up -d --build",
+    "stack:down": "docker compose down",
     "test": "pnpm --filter \"./apps/**\" test"
   },
   "keywords": [],

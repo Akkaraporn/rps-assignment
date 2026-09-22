@@ -1,19 +1,110 @@
+name: rps
+
+x-restart: &restart
+  restart: unless-stopped
+
 services:
-  redis:
-    image: redis:7-alpine
-    ports: ["6379:6379"]
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
+  web:
+    <<: *restart
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+      args:
+        VITE_REVEAL_DURATION_MS: ${VITE_REVEAL_DURATION_MS:-2000}
+    image: rps-web
+    ports:
+      - "${WEB_PORT:-80}:80"
+    depends_on:
+      - gateway
+
+  gateway:
+    <<: *restart
+    build:
+      context: .
+      dockerfile: docker/node-service.Dockerfile
+      args:
+        APP: gateway
+    image: rps-gateway
+    environment:
+      GATEWAY_PORT: 3000
+      GAME_SERVICE_URL: http://game:3001
+      USER_SERVICE_URL: http://user:3002
+      REDIS_URL: redis://redis:6379
+      INTERNAL_TOKEN: ${INTERNAL_TOKEN:?INTERNAL_TOKEN is required in .env}
+      COOKIE_SECRET: ${COOKIE_SECRET:?COOKIE_SECRET is required in .env}
+      SESSION_COOKIE_NAME: ${SESSION_COOKIE_NAME:-rps_sid}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost}
+      TRUST_PROXY: "true"
+      UPSTREAM_TIMEOUT_MS: ${UPSTREAM_TIMEOUT_MS:-3000}
+      PLAY_MIN_INTERVAL_MS: ${PLAY_MIN_INTERVAL_MS:-1500}
+      GUEST_CREATE_LIMIT: ${GUEST_CREATE_LIMIT:-20}
+      GUEST_CREATE_WINDOW_MS: ${GUEST_CREATE_WINDOW_MS:-60000}
+    depends_on:
+      redis:
+        condition: service_healthy
+      game:
+        condition: service_started
+      user:
+        condition: service_started
+
+  game:
+    <<: *restart
+    build:
+      context: .
+      dockerfile: docker/node-service.Dockerfile
+      args:
+        APP: game
+    image: rps-game
+    environment:
+      GAME_PORT: 3001
+      USER_SERVICE_URL: http://user:3002
+      INTERNAL_TOKEN: ${INTERNAL_TOKEN:?INTERNAL_TOKEN is required in .env}
+      USER_SERVICE_TIMEOUT_MS: ${USER_SERVICE_TIMEOUT_MS:-3000}
+
+  user:
+    <<: *restart
+    build:
+      context: .
+      dockerfile: docker/node-service.Dockerfile
+      args:
+        APP: user
+    image: rps-user
+    environment:
+      USER_PORT: 3002
+      DATABASE_URL: postgresql://${POSTGRES_USER:-rps}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required in .env}@postgres:5432/${POSTGRES_DB:-rps}
+      REDIS_URL: redis://redis:6379
+      INTERNAL_TOKEN: ${INTERNAL_TOKEN:?INTERNAL_TOKEN is required in .env}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
   postgres:
+    <<: *restart
     image: postgres:16-alpine
     environment:
-      POSTGRES_USER: rps
-      POSTGRES_PASSWORD: rps
-      POSTGRES_DB: rps
-    ports: ["5433:5432"]
+      POSTGRES_USER: ${POSTGRES_USER:-rps}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-rps}
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./apps/user/db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    <<: *restart
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
 volumes:
   pgdata:

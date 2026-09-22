@@ -1,0 +1,10 @@
+**/node_modules
+**/dist
+**/.vite
+**/coverage
+.git
+.env
+*.log
+c.txt
+cookies.txt
+NOTES.md

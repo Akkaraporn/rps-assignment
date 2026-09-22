@@ -26,7 +26,10 @@ export function play(move: PlayRequest['move']): Promise<PlayResponse> {
 }
 
 export class ApiError extends Error {
-  constructor(readonly status: number) {
+  readonly status: number;
+
+  constructor(status: number) {
     super(`Request failed: ${status}`);
+    this.status = status;
   }
 }

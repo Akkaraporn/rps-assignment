@@ -1,0 +1,20 @@
+name: rps-dev
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-rps}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rps}
+      POSTGRES_DB: ${POSTGRES_DB:-rps}
+    ports: ["${POSTGRES_DEV_PORT:-5433}:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./apps/user/db:/docker-entrypoint-initdb.d:ro
+
+  redis:
+    image: redis:7-alpine
+    ports: ["${REDIS_DEV_PORT:-6379}:6379"]
+
+volumes:
+  pgdata:
