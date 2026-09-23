@@ -72,7 +72,7 @@ docker run --rm hello-world
 
 ```bash
 cd ~
-git clone <REPOSITORY_URL> rps-assignment
+git clone https://github.com/Akkaraporn/rps-assignment rps-assignment
 cd rps-assignment
 ```
 
