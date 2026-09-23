@@ -36,14 +36,16 @@ body {
     justify-content: center;
     gap: $space * 2;
     margin: 0 0 $space * 2;
-
-    div { text-align: center; }
-    dt { font-size: 0.875rem; color: #78716c; }
-    dd { margin: 0.25rem 0 0; font-size: 1.5rem; font-weight: 500; }
   }
+}
 
-  &__bot { text-align: center; }
+.score {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   &__label { font-size: 0.875rem; color: #78716c; }
+  &__value { margin-top: 0.25rem; font-size: 1.5rem; font-weight: 500; white-space: nowrap; }
 }
 
 .bot-card {
@@ -80,6 +82,13 @@ body {
   cursor: pointer;
 
   &:disabled { opacity: 0.4; cursor: not-allowed; }
+  &--selected {
+    border-color: $color-win;
+    border-width: 2px;
+    background: rgba($color-win, 0.08);
+  }
+
+  &--selected:disabled { opacity: 1; }
   &:not(:disabled):hover { border-color: $color-text; }
 }
 

@@ -10,16 +10,16 @@ interface Props {
 export function ScoreBoard({ currentScore, highScore, botMove, result }: Props) {
   return (
     <section className="scoreboard">
-      <dl className="scoreboard__scores">
-        <div>
-          <dd data-testid="your-score">{currentScore} turn</dd>
-          <dd data-testid="high-score">{highScore} turn</dd>
+      <div className="scoreboard__scores">
+        <div className="score">
+          <span className="score__label">Your Score</span>
+          <span className="score__value" data-testid="your-score">{currentScore} turn</span>
         </div>
-        <div>
-          <dt>High Score</dt>
-          <dd>{highScore} turn</dd>
+        <div className="score">
+          <span className="score__label">High Score</span>
+          <span className="score__value" data-testid="high-score">{highScore} turn</span>
         </div>
-      </dl>
+      </div>
 
       <div className="scoreboard__bot">
         <span className="scoreboard__label">Bot action</span>
