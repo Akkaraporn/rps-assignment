@@ -10,7 +10,8 @@
     "infra:down": "docker compose -f docker-compose.dev.yml down",
     "stack": "docker compose up -d --build",
     "stack:down": "docker compose down",
-    "test": "pnpm --filter \"./apps/**\" test"
+    "test": "pnpm --filter \"./apps/**\" test",
+    "smoke": "bash scripts/smoke-test.sh"
   },
   "keywords": [],
   "author": "",
