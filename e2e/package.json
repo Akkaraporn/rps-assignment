@@ -1,0 +1,13 @@
+{
+  "name": "e2e",
+  "private": true,
+  "scripts": {
+    "stack:up": "docker compose -p rps-e2e -f ../docker-compose.yml -f ../docker-compose.e2e.yml up -d --build",
+    "stack:down": "docker compose -p rps-e2e -f ../docker-compose.yml -f ../docker-compose.e2e.yml down -v",
+    "test": "playwright test",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}

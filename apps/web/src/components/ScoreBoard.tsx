@@ -12,8 +12,8 @@ export function ScoreBoard({ currentScore, highScore, botMove, result }: Props) 
     <section className="scoreboard">
       <dl className="scoreboard__scores">
         <div>
-          <dt>Your Score</dt>
-          <dd>{currentScore} turn</dd>
+          <dd data-testid="your-score">{currentScore} turn</dd>
+          <dd data-testid="high-score">{highScore} turn</dd>
         </div>
         <div>
           <dt>High Score</dt>
@@ -23,7 +23,7 @@ export function ScoreBoard({ currentScore, highScore, botMove, result }: Props) 
 
       <div className="scoreboard__bot">
         <span className="scoreboard__label">Bot action</span>
-        <div className={`bot-card${result ? ` bot-card--${result.toLowerCase()}` : ''}`}>
+        <div data-testid="bot-card" className={`bot-card${result ? ` bot-card--${result.toLowerCase()}` : ''}`}>
           {botMove ?? '???'}
         </div>
       </div>

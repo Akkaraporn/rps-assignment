@@ -1,0 +1,11 @@
+services:
+  web:
+    ports:
+      - "8081:80"
+  gateway:
+    environment:
+      PLAY_MIN_INTERVAL_MS: 200
+      GUEST_CREATE_LIMIT: 500
+      CORS_ORIGIN: http://localhost:8081
+  uptime-kuma:
+    profiles: ["disabled"]

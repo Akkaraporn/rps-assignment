@@ -7,3 +7,5 @@ NOTES.md
 c.txt
 cookies.txt
 *.log*.tsbuildinfo
+e2e/test-results/
+e2e/playwright-report/

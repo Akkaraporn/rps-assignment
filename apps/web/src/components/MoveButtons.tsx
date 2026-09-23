@@ -17,6 +17,7 @@ export function MoveButtons({ disabled, onChoose }: Props) {
             className="move-button"
             disabled={disabled}
             onClick={() => onChoose(move)}
+            data-testid={`move-${move}`}
           >
             {move}
           </button>
