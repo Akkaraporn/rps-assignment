@@ -4,8 +4,7 @@ import { MoveButtons } from './components/MoveButtons';
 import './styles/main.scss';
 
 export default function App() {
-  const { phase, botMove, result, currentScore, highScore, error, choose } = useGame();
-
+  const { phase, playerMove, botMove, result, currentScore, highScore, error, choose } = useGame();
   return (
     <main className="app">
       <h1 className="app__title">Rock Paper Scissors</h1>
@@ -17,8 +16,7 @@ export default function App() {
         result={result}
       />
 
-      <MoveButtons disabled={phase !== 'idle'} onChoose={choose} />
-
+      <MoveButtons disabled={phase !== 'idle'} selected={playerMove} onChoose={choose} />
       {error && <p className="app__error">{error}</p>}
     </main>
   );
